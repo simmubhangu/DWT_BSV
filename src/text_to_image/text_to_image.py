@@ -1,14 +1,15 @@
 import numpy as np
 import cv2
+import sys
 
 version_check =[0,0]   
-image_path = 'hh.txt'
+#image_path = 'hh.txt'
 
 image_h = 128 
 image_w =128
 img = np.zeros((128,128),dtype=np.uint8)
 # print img
-def check():
+def check(image_path):
 	i =0
 	j =0
 	p =0
@@ -31,6 +32,7 @@ def check():
 
   
 if __name__ == '__main__':
-    check()
+
+    check(sys.argv[1])
     cv2.destroyAllWindows()
  
