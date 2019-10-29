@@ -55,7 +55,7 @@ package Final_Test;
          Haar_HP high_pass <- mkHP();
          Haar_LP low_pass <- mkLP();
          
-         rule initial_push(address ==0 && state ==0);
+         rule initial_push(address ==0 && state ==0); //inital push to the fifo
             row_fifo_0.enq(image.sub(address));  //push into first fifo
             row_fifo_1.enq(image.sub(address+1)); //push second data into second fifo
             c_fifo_0.enq(image.sub(address+256));
@@ -80,57 +80,36 @@ package Final_Test;
           // $display(address , read_count);
            // state <= state+1;
          endrule
-         rule first_coefficient(address >3);
-            let concat_r = {row_fifo_0.first, row_fifo_1.first};
-            let concat_c = {c_fifo_0.first, c_fifo_1.first};
-            c_fifo_0.deq;
+         rule first_coefficient(address >3); //get the first Haar coefficient
+            let concat_r = {row_fifo_0.first, row_fifo_1.first}; //conacte 16 bit together first row
+            let concat_c = {c_fifo_0.first, c_fifo_1.first};     //second row two column
+            c_fifo_0.deq;                                        //dequeue the each fifo
             c_fifo_1.deq;
             row_fifo_0.deq;
             row_fifo_1.deq;
 
            // $display(concat_value[7:0] , concat_value[15:8]);
            // $display((concat_value[7:0]/2+ concat_value[15:8]/2));
-            l_00 <= low_pass_filter(concat_r);
+            l_00 <= low_pass_filter(concat_r);                  //pash to low and high pass filter
             l_01 <= low_pass_filter(concat_c);
             //$display(l);
             h_00 <= high_pass_filter(concat_r);
             //$display(l);
             h_01 <= high_pass_filter(concat_c);
-            let concat_ll = {l_00, l_01};
+            let concat_ll = {l_00, l_01};                       //for 2nd coefficient
             let concat_hh = {h_00, h_01};
 
-            let ll = low_pass_filter(concat_ll);
+            let ll = low_pass_filter(concat_ll);        //pass again for 2D wavelet
             let lh = high_pass_filter(concat_ll);
             let hl = low_pass_filter(concat_hh);
             let hh = high_pass_filter(concat_hh);
             
-            $display(hh);
+            $display(hh);                              //print and save each image coff
             state <= state+1;
             //$display(row_fifo_0.first,row_fifo_1.first);
 //            $display(state);
          endrule
-        /* rule second_coefficient(state%2 ==0);
-            
-            let concat_value = {row_fifo_0.first, row_fifo_1.first};
-            row_fifo_0.deq;
-            row_fifo_1.deq;
-
-            let l_1 = low_pass_filter(concat_value);
-         
-            let h_1 = high_pass_filter(concat_value);
-            
-            let concat_ll = {l, l_1 };
-            let concat_hh = {h, h_1};
-            
-            let ll = low_pass_filter(concat_ll);
-            let lh = high_pass_filter(concat_ll);
-            let hl = low_pass_filter(concat_hh);
-            let hh = high_pass_filter(concat_hh);
-            state <= state+1;
-            $display(hh);
-           // read_count <= read_count+1;
-         endrule*/
-         rule finish(state ==(65535/4)+3);
+         rule finish(state ==(65535/4)+3);     // final rule to end the game
             //$display(l,h);
             $finish(0);
          endrule
