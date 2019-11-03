@@ -104,7 +104,7 @@ package Final_Test;
             let hl = low_pass_filter(concat_hh);
             let hh = high_pass_filter(concat_hh);
             
-            $display(hh);                              //print and save each image coff
+            $display(ll, lh, hl, hh);                              //print and save each image coff
             state <= state+1;
             //$display(row_fifo_0.first,row_fifo_1.first);
 //            $display(state);
