@@ -1,6 +1,6 @@
 # DWT_BSV
 run the follwoing commend:
-1. bsv -verilog Dwt_compression.bsv
+1. bsv -verilog DWT_Compression.bsv
 2. bsv -e mkDWTComp mkDWTComp.v
 3. ./a.out >> abc.txt # this will print and generate the .txt file
 
